@@ -369,7 +369,9 @@ class Roo::Base
                   [cell(@header_line, col), col]
                 end]
 
-      @header_line.upto(last_row) do |line|
+      start_line = @header_line || 1
+      start_line = (@header_line || 0) + 1 if @options[:skip_headers]
+      start_line.upto(last_row) do |line|
         yield(Hash[headers.map { |k, v| [k, cell(line, v)] }])
       end
     end
