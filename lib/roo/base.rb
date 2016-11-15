@@ -573,6 +573,15 @@ class Roo::Base
     # then create new hash by indexing strings and keeping integers for header array
     @headers = row_with(hash.values, true)
     @headers = Hash[hash.keys.zip(@headers.map { |x| header_index(x) })]
+  rescue Roo::HeaderRowNotFoundError => e
+    if @options[:force_headers]
+      # Finding headers failed. Force the headers in the order they are given
+      @headers = hash.dup
+      hash.keys.each_with_index { |k, i| @headers[k] = i + 1 }
+      @header_line = 0
+    else
+      raise e
+    end
   end
 
   def header_index(query)
